@@ -110,7 +110,7 @@ app.get("/apiKey", async (req, res) => {
 
 });
 
-app.get("/bearerToken", (req, res) => {
+app.get("/bearerToken", async (req, res) => {
   //TODO 5: Write your code here to hit up the /secrets/{id} endpoint
   //and get the secret with id of 42
   //HINT: This is how you can use axios to do bearer token auth:
@@ -122,6 +122,33 @@ app.get("/bearerToken", (req, res) => {
     },
   });
   */
+
+   try
+  {
+      const response = await axios.get(`https://secrets-api.appbrewery.com/secrets/42`, {
+            headers: {
+                'Authorization': `Bearer ${yourBearerToken}`
+            }
+        })
+        .then(response => {
+
+          const result = response.data;
+            console.log(response.data);
+            res.render("index.ejs", { data: JSON.stringify(result)});
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+      
+  }
+  catch(error)
+  {
+    console.error("Failed to make request:", error.message);
+    res.render("index.ejs", {
+      error: error.message,
+    });
+  }
 });
 
 app.listen(port, () => {
